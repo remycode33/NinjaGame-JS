@@ -88,7 +88,9 @@ canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 let ctx = canvas.getContext("2d");
 
-let frequency = 5;
+let frequency = 4;
+let celerity = 10;
+let ratioCharacter = 2 / 3;
 
 class Player {
   constructor(
@@ -119,6 +121,7 @@ class Player {
     this.spriteX = 0;
     this.spriteY = 0;
     this.time = 0;
+    this.reverse = false;
   }
 
   update() {
@@ -152,17 +155,34 @@ class Player {
 
   draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.drawImage(
-      this.image,
-      this.spriteX,
-      this.spriteY,
-      this.spriteWidth,
-      this.spriteHeight,
-      this.x,
-      this.y,
-      this.width,
-      this.height
-    );
+    if (this.reverse == false) {
+      ctx.drawImage(
+        this.image,
+        this.spriteX,
+        this.spriteY,
+        this.spriteWidth,
+        this.spriteHeight,
+        this.x,
+        this.y,
+        this.width,
+        this.height
+      );
+    } else if (this.reverse == true) {
+      ctx.save();
+      ctx.scale(-1, 1);
+      ctx.drawImage(
+        this.image,
+        this.spriteX,
+        this.spriteY,
+        this.spriteWidth,
+        this.spriteHeight,
+        -this.x - this.width,
+        this.y,
+        this.width,
+        this.height
+      );
+      ctx.restore();
+    }
   }
 
   animate() {
@@ -172,7 +192,6 @@ class Player {
       });
     } else {
       this.update();
-
       this.draw();
       this.time = Date.now();
       requestAnimationFrame(() => {
@@ -184,8 +203,8 @@ class Player {
 
 let ninja = new Player(
   "ninja",
-  140,
-  190,
+  140 * ratioCharacter,
+  190 * ratioCharacter,
   50,
   300,
   280,
@@ -206,16 +225,18 @@ addEventListener("keydown", (event) => {
   console.log(event.key);
   switch (event.key) {
     case "ArrowRight":
-      ninja.speed.x = 20;
+      ninja.speed.x = celerity;
+      ninja.reverse = false;
       break;
     case "ArrowLeft":
-      ninja.speed.x = -20;
+      ninja.speed.x = -celerity;
+      ninja.reverse = true;
       break;
     case "ArrowUp":
-      ninja.speed.y = -20;
+      ninja.speed.y = -celerity;
       break;
     case "ArrowDown":
-      ninja.speed.y = 20;
+      ninja.speed.y = celerity;
       break;
   }
 });
