@@ -42,6 +42,7 @@ class Player {
     this.spriteY = 0;
     this.time = 0;
     this.reverse = false;
+    this.inJump = false;
   }
 
   update() {
@@ -74,12 +75,16 @@ class Player {
   }
 
   draw() {
+    this.y >= CANVAS_HEIGHT - 150
+      ? (this.inJump = false)
+      : (this.inJump = true);
+
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     if (this.reverse == false) {
       ctx.drawImage(
         this.image,
-        this.spriteX,
-        this.spriteY,
+        !this.inJump ? this.spriteX : 280,
+        !this.inJump ? this.spriteY : 0,
         this.spriteWidth,
         this.spriteHeight,
         this.x,
@@ -92,8 +97,8 @@ class Player {
       ctx.scale(-1, 1);
       ctx.drawImage(
         this.image,
-        this.spriteX,
-        this.spriteY,
+        !this.inJump ? this.spriteX : 280,
+        !this.inJump ? this.spriteY : 0,
         this.spriteWidth,
         this.spriteHeight,
         -this.x - this.width,
@@ -154,16 +159,34 @@ addEventListener("keydown", (event) => {
       break;
     case "ArrowUp":
       ninja.inJump = true;
-      ninja.speed.y = -celerity;
-      setTimeout(() => {
-        ninja.speed.y = 3 * celerity;
-      }, 500);
+      ninja.speed.y = -3 * celerity;
+
+      // ninja.setTimeoutDown = setTimeout(() => {
+      //   ninja.speed.y = 3 * celerity;
+      // }, 1000);
       break;
     case "ArrowDown":
-      ninja.speed.y = celerity;
-      setTimeout(() => {
-        ninja.speed.y = 3 * celerity;
-      }, 500);
+      ninja.speed.y = 4.5 * celerity;
+      // ninja.setTimeoutUp = setTimeout(() => {
+      //   ninja.speed.y = 3 * celerity;
+      // }, 1000);
+      break;
+  }
+});
+addEventListener("keyup", (event) => {
+  event.preventDefault();
+  console.log(event.key);
+  switch (event.key) {
+    case "ArrowRight":
+      ninja.speed.x = 0;
+      ninja.reverse = false;
+      break;
+    case "ArrowLeft":
+      ninja.speed.x = 0;
+      ninja.reverse = true;
+      break;
+    case "ArrowUp":
+      ninja.speed.y = 3 * celerity;
       break;
   }
 });
