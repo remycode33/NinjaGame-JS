@@ -1,92 +1,12 @@
-// let canvas = document.querySelector("canvas");
-// console.log("🚀 ~ file: index.js:2 ~ canvas:", canvas);
-// canvas.width = window.innerWidth;
-// canvas.height = window.innerHeight;
-// let ctx = canvas.getContext("2d");
-
-// class Player {
-//   constructor(
-//     name,
-//     width,
-//     height,
-//     x,
-//     y,
-//     spriteWidth,
-//     spriteHeight,
-//     speed,
-//     frame,
-//     url
-//   ) {
-//     this.name = name;
-//     this.width = width;
-//     this.height = height;
-//     this.x = x;
-//     this.y = y;
-//     this.spriteWidth = spriteWidth;
-//     this.spriteHeight = spriteHeight;
-//     this.image = new Image();
-//     this.image.src = url;
-//     this.speed = speed;
-//     this.frame = frame;
-//     this.maxFrame = 9;
-//     this.spriteX =
-//       this.frame < 5 ? spriteWidth * this.frame : spriteWidth * this.frame - 5;
-//     this.spriteY = this.frame < 5 ? spriteHeight * 1 : spriteHeight * 2;
-//   }
-//   update(speed) {
-//     console.log("update pending");
-//     if (this.frame < this.maxFrame) {
-//       this.frame++;
-//     } else {
-//       this.frame = 0;
-//     }
-//     this.x += speed;
-//     this.y += speed;
-//     window.requestAnimationFrame(() => {
-//       ctx.clearRect(0, 0, canvas.width, canvas.height);
-//       this.update(speed);
-//       this.draw();
-//       console.log(this.frame);
-//     });
-//   }
-
-//   draw() {
-//     ctx.drawImage(
-//       this.image,
-//       this.spriteX,
-//       this.spriteY,
-//       this.spriteWidth,
-//       this.spriteHeight,
-//       this.x,
-//       this.y,
-//       this.width,
-//       this.height
-//     );
-//   }
-// }
-
-// let ninja = new Player(
-//   "ninja",
-//   280,
-//   385,
-//   0,
-//   0,
-//   280,
-//   385,
-//   0,
-//   0,
-//   "./assets/character1.png"
-// );
-
-// ninja.image.onload = () => {
-//   ninja.update(0);
-// };
-
 let canvas = document.querySelector("canvas");
 
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
-let ctx = canvas.getContext("2d");
+
+export let CANVAS_WIDTH = canvas.width;
+export let CANVAS_HEIGHT = canvas.height;
+
+export let ctx = canvas.getContext("2d");
 
 let frequency = 4;
 let celerity = 10;
@@ -206,7 +126,7 @@ let ninja = new Player(
   140 * ratioCharacter,
   190 * ratioCharacter,
   50,
-  300,
+  CANVAS_HEIGHT,
   280,
   385,
   0,
@@ -233,10 +153,17 @@ addEventListener("keydown", (event) => {
       ninja.reverse = true;
       break;
     case "ArrowUp":
+      ninja.inJump = true;
       ninja.speed.y = -celerity;
+      setTimeout(() => {
+        ninja.speed.y = 3 * celerity;
+      }, 500);
       break;
     case "ArrowDown":
       ninja.speed.y = celerity;
+      setTimeout(() => {
+        ninja.speed.y = 3 * celerity;
+      }, 500);
       break;
   }
 });
