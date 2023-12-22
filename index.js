@@ -1,16 +1,18 @@
-let canvas = document.querySelector("canvas");
+export let CANVAS_WIDTH = window.innerWidth;
+export let CANVAS_HEIGHT = window.innerHeight;
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-
-export let CANVAS_WIDTH = canvas.width;
-export let CANVAS_HEIGHT = canvas.height;
+export let canvas = document.querySelector("canvas");
 
 export let ctx = canvas.getContext("2d");
+canvas.width = CANVAS_WIDTH;
+canvas.height = CANVAS_HEIGHT;
+import { mainBackground } from "./background.js";
 
-let frequency = 4;
-let celerity = 10;
-let ratioCharacter = 2 / 3;
+export let frequency = 6;
+let celerity = 20;
+let lader = 3 / 3;
+let widthCharacter = 100;
+let heightCharacter = 190;
 
 class Player {
   constructor(
@@ -43,6 +45,7 @@ class Player {
     this.time = 0;
     this.reverse = false;
     this.inJump = false;
+    this.inMove = false;
   }
 
   update() {
@@ -75,16 +78,16 @@ class Player {
   }
 
   draw() {
-    this.y >= CANVAS_HEIGHT - 150
+    this.y >= CANVAS_HEIGHT - heightCharacter * lader - 4
       ? (this.inJump = false)
       : (this.inJump = true);
 
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // ctx.clearRect(0, 0, canvas.width, canvas.height);
     if (this.reverse == false) {
       ctx.drawImage(
         this.image,
-        !this.inJump ? this.spriteX : 280,
-        !this.inJump ? this.spriteY : 0,
+        this.inMove ? this.spriteX : 280,
+        this.inMove ? this.spriteY : 0,
         this.spriteWidth,
         this.spriteHeight,
         this.x,
@@ -97,8 +100,8 @@ class Player {
       ctx.scale(-1, 1);
       ctx.drawImage(
         this.image,
-        !this.inJump ? this.spriteX : 280,
-        !this.inJump ? this.spriteY : 0,
+        this.inMove ? this.spriteX : 280,
+        this.inMove ? this.spriteY : 0,
         this.spriteWidth,
         this.spriteHeight,
         -this.x - this.width,
@@ -128,8 +131,8 @@ class Player {
 
 let ninja = new Player(
   "ninja",
-  140 * ratioCharacter,
-  190 * ratioCharacter,
+  widthCharacter * lader,
+  heightCharacter * lader,
   50,
   CANVAS_HEIGHT,
   280,
@@ -140,20 +143,17 @@ let ninja = new Player(
   "./assets/character1.png"
 );
 
-ninja.image.onload = () => {
-  ninja.animate();
-  ninja.time = Date.now();
-};
-
 addEventListener("keydown", (event) => {
   event.preventDefault();
   console.log(event.key);
   switch (event.key) {
     case "ArrowRight":
+      ninja.inMove = true;
       ninja.speed.x = celerity;
       ninja.reverse = false;
       break;
     case "ArrowLeft":
+      ninja.inMove = true;
       ninja.speed.x = -celerity;
       ninja.reverse = true;
       break;
@@ -178,10 +178,12 @@ addEventListener("keyup", (event) => {
   console.log(event.key);
   switch (event.key) {
     case "ArrowRight":
+      ninja.inMove = false;
       ninja.speed.x = 0;
       ninja.reverse = false;
       break;
     case "ArrowLeft":
+      ninja.inMove = false;
       ninja.speed.x = 0;
       ninja.reverse = true;
       break;
@@ -190,3 +192,35 @@ addEventListener("keyup", (event) => {
       break;
   }
 });
+
+//##################
+
+// ninja.image.onload = () => {
+//   ninja.animate();
+//   ninja.time = Date.now();
+// };
+
+let background = await mainBackground();
+
+// background.image.onload = () => {
+//   background.animate();
+// };
+
+function animateAll() {
+  if ((Date.now() - ninja.time) / 10 < frequency) {
+    requestAnimationFrame(() => {
+      animateAll();
+    });
+  } else {
+    ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+    background.draw();
+    ninja.update();
+    ninja.draw();
+    ninja.time = Date.now();
+    requestAnimationFrame(() => {
+      animateAll();
+    });
+  }
+}
+
+animateAll();
