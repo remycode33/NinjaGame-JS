@@ -145,6 +145,7 @@ let ninja = new Player(
 
 addEventListener("keydown", (event) => {
   event.preventDefault();
+  backgroundAudio.play();
   console.log(event.key);
   switch (event.key) {
     case "ArrowRight":
@@ -224,3 +225,9 @@ function animateAll() {
 }
 
 animateAll();
+
+const backgroundAudio = document.getElementById("backgroundAudio");
+
+// document.addEventListener("click", () => {
+//   backgroundAudio.play();
+// });
