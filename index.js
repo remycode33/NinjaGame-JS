@@ -10,7 +10,7 @@ import { mainBackground } from "./background.js";
 
 export let frequency = 6;
 let celerity = 20;
-let lader = 3 / 3;
+let lader = window.innerWidth >= 1000 ? 3 / 3 : 3 / 6;
 let widthCharacter = 100;
 let heightCharacter = 190;
 
@@ -72,8 +72,8 @@ class Player {
       this.speed.y = 0;
       this.y =
         this.y >= canvas.height - this.height
-          ? canvas.height - this.height - 4
-          : 4;
+          ? canvas.height - this.height - 2
+          : 1;
     }
   }
 
@@ -143,37 +143,54 @@ let ninja = new Player(
   "./assets/character1.png"
 );
 
+// Fonction pour gérer les actions en fonction de la touche ou du toucher
+function handleInput(action) {
+  switch (action) {
+    case "right":
+      ninja.inMove = true;
+      ninja.speed.x = celerity;
+      ninja.reverse = false;
+      break;
+    case "left":
+      ninja.inMove = true;
+      ninja.speed.x = -celerity;
+      ninja.reverse = true;
+      break;
+    case "up":
+      ninja.inJump = true;
+      ninja.speed.y = -3 * lader * celerity;
+      break;
+    case "down":
+      ninja.y + ninja.height * lader >= CANVAS_HEIGHT
+        ? undefined
+        : (ninja.speed.y = 4.5 * lader * celerity);
+      break;
+    default:
+    // Gérer d'autres actions
+  }
+}
+
+// Gérer les événements de clavier
 addEventListener("keydown", (event) => {
   event.preventDefault();
   backgroundAudio.play();
   console.log(event.key);
   switch (event.key) {
     case "ArrowRight":
-      ninja.inMove = true;
-      ninja.speed.x = celerity;
-      ninja.reverse = false;
+      handleInput("right");
       break;
     case "ArrowLeft":
-      ninja.inMove = true;
-      ninja.speed.x = -celerity;
-      ninja.reverse = true;
+      handleInput("left");
       break;
     case "ArrowUp":
-      ninja.inJump = true;
-      ninja.speed.y = -3 * celerity;
-
-      // ninja.setTimeoutDown = setTimeout(() => {
-      //   ninja.speed.y = 3 * celerity;
-      // }, 1000);
+      handleInput("up");
       break;
     case "ArrowDown":
-      ninja.speed.y = 4.5 * celerity;
-      // ninja.setTimeoutUp = setTimeout(() => {
-      //   ninja.speed.y = 3 * celerity;
-      // }, 1000);
+      handleInput("down");
       break;
   }
 });
+
 addEventListener("keyup", (event) => {
   event.preventDefault();
   console.log(event.key);
@@ -189,9 +206,46 @@ addEventListener("keyup", (event) => {
       ninja.reverse = true;
       break;
     case "ArrowUp":
-      ninja.speed.y = 3 * celerity;
+      handleInput("down");
       break;
   }
+});
+
+// Gérer les événements tactiles
+let touchStartX, touchEndX, touchStartY, touchEndY;
+
+canvas.addEventListener("touchstart", (event) => {
+  event.preventDefault();
+  touchStartX = event.touches[0].clientX;
+  touchStartY = event.touches[0].clientY;
+});
+
+canvas.addEventListener("touchmove", (event) => {
+  event.preventDefault();
+  touchEndX = event.touches[0].clientX;
+  let deltaX = touchEndX - touchStartX;
+
+  touchEndY = event.touches[0].clientY;
+  let deltaY = touchEndY - touchStartY;
+
+  if (deltaX > 10) {
+    handleInput("right");
+  } else if (deltaX < -10) {
+    handleInput("left");
+  }
+  if (deltaY > 10) {
+    handleInput("down");
+  } else if (deltaY < -10) {
+    handleInput("up");
+  }
+});
+
+canvas.addEventListener("touchend", (event) => {
+  event.preventDefault();
+  ninja.speed.x = 0;
+  ninja.speed.y = 0;
+  ninja.inMove = false;
+  handleInput("down");
 });
 
 //##################
