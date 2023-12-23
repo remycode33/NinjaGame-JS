@@ -37,9 +37,10 @@ export class Background {
       this.height
     );
   }
-  update() {
-    if (this.position.x < -this.width) {
-      this.position.x = 0;
+  update(initialX) {
+    if (this.position.x <= initialX - this.width) {
+      console.log("this.position.x < -this.width");
+      this.position.x = initialX;
     } else {
       this.position.x -= this.speed;
     }
@@ -82,7 +83,7 @@ export let mainBackground = async () => {
     canvas_width,
     canvas_height,
     { x: 0, y: 0 },
-    1,
+    2,
     1024,
     400
   );
@@ -93,7 +94,7 @@ export let mainBackground = async () => {
       canvas_width,
       canvas_height,
       { x: canvas_width, y: 0 },
-      1,
+      2,
       1024,
       400
     );
