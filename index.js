@@ -69,10 +69,10 @@ class Player {
     if (this.y < canvas.height - this.height && this.y > 0) {
       this.y += this.speed.y;
     } else {
-      this.speed.y = 0;
+      // this.speed.y = 0;
       this.y =
         this.y >= canvas.height - this.height
-          ? canvas.height - this.height - 2
+          ? ((this.speed.y = 0), canvas.height - this.height - 2)
           : 1;
     }
   }
