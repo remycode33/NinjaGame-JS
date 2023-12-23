@@ -161,7 +161,8 @@ function handleInput(action) {
       ninja.speed.y = -3 * lader * celerity;
       break;
     case "down":
-      ninja.y + ninja.height * lader >= CANVAS_HEIGHT
+      console.log(ninja.y + ninja.height * lader > CANVAS_HEIGHT);
+      ninja.y + ninja.height * lader > CANVAS_HEIGHT
         ? undefined
         : (ninja.speed.y = 4.5 * lader * celerity);
       break;
@@ -242,6 +243,7 @@ canvas.addEventListener("touchmove", (event) => {
 
 canvas.addEventListener("touchend", (event) => {
   event.preventDefault();
+  backgroundAudio.play();
   ninja.speed.x = 0;
   ninja.speed.y = 0;
   ninja.inMove = false;
