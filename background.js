@@ -38,7 +38,11 @@ export class Background {
     );
   }
   update() {
-    (this.positionXCanvas = 0), (this.positionYCanvas = 0);
+    if (this.position.x < -this.width) {
+      this.position.x = 0;
+    } else {
+      this.position.x -= this.speed;
+    }
   }
 
   animate() {
@@ -59,23 +63,42 @@ export class Background {
 }
 
 export let mainBackground = async () => {
+  let canvas_width, canvas_height;
   let dim1 = new Promise((resolve) => {
     resolve(CANVAS_WIDTH);
   });
   let dim2 = new Promise((resolve) => {
     resolve(CANVAS_HEIGHT);
   });
-  await dim1;
-  await dim2;
+  canvas_width = await dim1;
+  canvas_height = await dim2;
+  // await dim1.then((width) => (canvas_width = width));
+  // await dim2.then((height) => (canvas_height = height));
+
   console.log(dim1, dim2);
+
   let background = new Background(
     "./assets/background1.png",
-    await dim1,
-    await dim2,
+    canvas_width,
+    canvas_height,
     { x: 0, y: 0 },
-    0,
+    1,
     1024,
     400
   );
-  return background;
+  let background2 = async () => {
+    await dim1, dim2;
+    return new Background(
+      "./assets/background1.png",
+      canvas_width,
+      canvas_height,
+      { x: canvas_width, y: 0 },
+      1,
+      1024,
+      400
+    );
+  };
+  let bckg2 = await background2();
+
+  return [background, bckg2];
 };

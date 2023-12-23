@@ -286,7 +286,10 @@ function animateAll() {
     });
   } else {
     ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-    background.draw();
+    background[0].update();
+    background[1].update();
+    background[0].draw();
+    background[1].draw();
     ninja.update();
     ninja.draw();
     ninja.time = Date.now();
