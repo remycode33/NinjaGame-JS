@@ -13,6 +13,7 @@ let celerity = 20;
 let lader = window.innerWidth >= 1000 ? 3 / 3 : 3 / 6;
 let widthCharacter = 100;
 let heightCharacter = 190;
+let safeMargin = 3;
 
 class Player {
   constructor(
@@ -45,6 +46,8 @@ class Player {
     this.time = 0;
     this.reverse = false;
     this.inJump = false;
+    this.timeInJump = 0;
+    this.numberJump = 0;
     this.inMove = false;
   }
 
@@ -157,12 +160,25 @@ function handleInput(action) {
       ninja.reverse = true;
       break;
     case "up":
-      ninja.inJump = true;
-      ninja.speed.y = -3 * lader * celerity;
+      if (ninja.y >= CANVAS_HEIGHT - safeMargin - heightCharacter * lader) {
+        console.log(
+          "reset jump number",
+          ninja.y,
+          CANVAS_HEIGHT - heightCharacter * lader
+        );
+        ninja.numberJump = 0;
+      }
+      ninja.timeInJump = Date.now();
+      ninja.numberJump < 2 ? ninja.numberJump++ : handleInput("down");
+      console.log(ninja.timeInJump, ninja.numberJump);
+      if (ninja.numberJump < 2 && Date.now() - ninja.timeInJump < 600) {
+        ninja.y < heightCharacter * lader
+          ? undefined
+          : ((ninja.inJump = true), (ninja.speed.y = -3 * lader * celerity));
+      }
       break;
     case "down":
-      console.log(ninja.y + ninja.height * lader > CANVAS_HEIGHT);
-      ninja.y + ninja.height * lader > CANVAS_HEIGHT
+      ninja.y + heightCharacter * lader + safeMargin > CANVAS_HEIGHT
         ? undefined
         : (ninja.speed.y = 4.5 * lader * celerity);
       break;
