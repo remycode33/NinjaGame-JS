@@ -304,8 +304,17 @@ export let mainBackground = () => {
     1024,
     400
   );
+  let background3 = new Background(
+    "./assets/background1.png",
+    canvas_width,
+    canvas_height,
+    { x: -canvas_width, y: 0 },
+    0,
+    1024,
+    400
+  );
 
-  return [background, background2];
+  return [background, background2, background3];
 };
 // background.image.onload = () => {
 //   background.animate();
@@ -322,8 +331,10 @@ async function animateAll() {
     ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
     background[0].update(0);
     background[1].update(CANVAS_WIDTH);
+    background[2].update(-CANVAS_WIDTH);
     background[0].draw();
     background[1].draw();
+    background[2].draw();
     ninja.update();
     ninja.draw();
     ninja.time = Date.now();

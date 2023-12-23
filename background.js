@@ -41,8 +41,10 @@ export class Background {
     if (this.position.x <= initialX - this.width) {
       console.log("this.position.x < -this.width");
       this.position.x = initialX;
+    } else if (this.position.x >= initialX + this.width) {
+      this.position.x = initialX;
     } else {
-      this.position.x -= ninja.inMove ? ninja.speed.x : 0;
+      this.position.x -= ninja.speed.x;
     }
   }
 
