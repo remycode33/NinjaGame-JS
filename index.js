@@ -6,7 +6,7 @@ export let canvas = document.querySelector("canvas");
 export let ctx = canvas.getContext("2d");
 canvas.width = CANVAS_WIDTH;
 canvas.height = CANVAS_HEIGHT;
-import { mainBackground } from "./background.js";
+import { Background } from "./background.js";
 
 export let frequency = 6;
 let celerity = 20;
@@ -132,7 +132,7 @@ class Player {
   }
 }
 
-let ninja = new Player(
+export let ninja = new Player(
   "ninja",
   widthCharacter * lader,
   heightCharacter * lader,
@@ -273,13 +273,47 @@ canvas.addEventListener("touchend", (event) => {
 //   ninja.time = Date.now();
 // };
 
-let background = await mainBackground();
+// let background = await mainBackground();
 
+// document.addEventListener("click", () => {
+//   backgroundAudio.play();
+// });
+export let mainBackground = () => {
+  let canvas_width, canvas_height;
+
+  canvas_width = CANVAS_WIDTH;
+  canvas_height = CANVAS_HEIGHT;
+  // await dim1.then((width) => (canvas_width = width));
+  // await dim2.then((height) => (canvas_height = height));
+
+  let background = new Background(
+    "./assets/background1.png",
+    canvas_width,
+    canvas_height,
+    { x: 0, y: 0 },
+    0,
+    1024,
+    400
+  );
+  let background2 = new Background(
+    "./assets/background1.png",
+    canvas_width,
+    canvas_height,
+    { x: canvas_width, y: 0 },
+    0,
+    1024,
+    400
+  );
+
+  return [background, background2];
+};
 // background.image.onload = () => {
 //   background.animate();
 // };
 
-function animateAll() {
+let background = mainBackground();
+
+async function animateAll() {
   if ((Date.now() - ninja.time) / 10 < frequency) {
     requestAnimationFrame(() => {
       animateAll();
@@ -302,7 +336,3 @@ function animateAll() {
 animateAll();
 
 const backgroundAudio = document.getElementById("backgroundAudio");
-
-// document.addEventListener("click", () => {
-//   backgroundAudio.play();
-// });

@@ -1,5 +1,5 @@
 import { ctx } from "./index.js";
-import { CANVAS_WIDTH, CANVAS_HEIGHT, frequency } from "./index.js";
+import { CANVAS_WIDTH, CANVAS_HEIGHT, frequency, ninja } from "./index.js";
 
 export class Background {
   constructor(
@@ -42,7 +42,7 @@ export class Background {
       console.log("this.position.x < -this.width");
       this.position.x = initialX;
     } else {
-      this.position.x -= this.speed;
+      this.position.x -= ninja.inMove ? ninja.speed.x : 0;
     }
   }
 
@@ -62,44 +62,3 @@ export class Background {
     }
   }
 }
-
-export let mainBackground = async () => {
-  let canvas_width, canvas_height;
-  let dim1 = new Promise((resolve) => {
-    resolve(CANVAS_WIDTH);
-  });
-  let dim2 = new Promise((resolve) => {
-    resolve(CANVAS_HEIGHT);
-  });
-  canvas_width = await dim1;
-  canvas_height = await dim2;
-  // await dim1.then((width) => (canvas_width = width));
-  // await dim2.then((height) => (canvas_height = height));
-
-  console.log(dim1, dim2);
-
-  let background = new Background(
-    "./assets/background1.png",
-    canvas_width,
-    canvas_height,
-    { x: 0, y: 0 },
-    2,
-    1024,
-    400
-  );
-  let background2 = async () => {
-    await dim1, dim2;
-    return new Background(
-      "./assets/background1.png",
-      canvas_width,
-      canvas_height,
-      { x: canvas_width, y: 0 },
-      2,
-      1024,
-      400
-    );
-  };
-  let bckg2 = await background2();
-
-  return [background, bckg2];
-};
