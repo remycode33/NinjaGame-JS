@@ -62,13 +62,16 @@ class Player {
         ? this.spriteWidth * this.frame
         : this.spriteWidth * (this.frame - 5);
     this.spriteY = this.frame < 5 ? 35 : 385;
-    if (this.x < canvas.width - this.width && this.x > 0) {
+    if (this.x < (canvas.width * 1) / 3 && this.x > 0) {
       this.x += this.speed.x;
-    } else {
-      this.speed.x = 0;
-      this.x =
-        this.x >= canvas.width - this.width ? canvas.width - this.width - 4 : 4;
     }
+    // else {
+    //   this.speed.x = 0;
+    //   // this.x =
+    //   //   this.x >= canvas.width - this.width - safeMargin
+    //   //     ? canvas.width - this.width - safeMargin
+    //   //     : safeMargin;
+    // }
     if (this.y < canvas.height - this.height && this.y > 0) {
       this.y += this.speed.y;
     } else {
